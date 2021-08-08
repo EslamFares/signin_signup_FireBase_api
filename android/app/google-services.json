@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "41514886942",
+    "project_id": "signin-fb-api",
+    "storage_bucket": "signin-fb-api.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:41514886942:android:ff52b527c0406593264b0f",
+        "android_client_info": {
+          "package_name": "com.eslamfares.signin_fb_api"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "41514886942-ag00u2ar231b3t3frg92n4islbplj1r8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLSy-_xZ7vs4p7s9efCNCcD8FDdIdvG0o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "41514886942-ag00u2ar231b3t3frg92n4islbplj1r8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
