@@ -36,7 +36,15 @@ class HomeCubit extends Cubit<HomeStates> {
             "email": emailLoginController.text,
             "password": passwordLoginController.text,
             "returnSecureToken": true
-          });
+          },
+          //>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<
+          //=======important to handel error in Dio in (error 404) =========
+          options: Options(
+              contentType: 'application/json',
+              followRedirects: false,
+              validateStatus: (state) {
+                return state! < 500;
+              }));
 
       //invalid state
       if (response.statusCode == 200) {
@@ -70,8 +78,9 @@ class HomeCubit extends Cubit<HomeStates> {
       emit(LoadLoginState());
     }
   }
+
   //================SignUp====================
- final signUpFormKey = GlobalKey<FormState>();
+  final signUpFormKey = GlobalKey<FormState>();
   TextEditingController emailsignUpController = TextEditingController();
   TextEditingController passwordsignUpontroller = TextEditingController();
   //==================
@@ -80,14 +89,16 @@ class HomeCubit extends Cubit<HomeStates> {
     hidePassSignUp = !hidePassSignUp;
     emit(HideSignUpPassState());
   }
+
   bool hidePassSignUp2 = true;
   changeShowPassSignUp2() {
     hidePassSignUp2 = !hidePassSignUp2;
     emit(HideSignUpPassState());
   }
+
   //===================
   bool loadSignUp = false;
- 
+
   void signUp(context) async {
     print('go==========>SignUp');
     loadSignUp = true;
@@ -105,7 +116,7 @@ class HomeCubit extends Cubit<HomeStates> {
       //invalid state
       if (response.statusCode == 200) {
         print('data send >>>>>> ${response.statusCode}');
-         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('✔️ account created ..❗ Now LoginIn ..'),
           behavior: SnackBarBehavior.floating,
         ));
@@ -136,5 +147,4 @@ class HomeCubit extends Cubit<HomeStates> {
       emit(LoadSignUpState());
     }
   }
-
 }
