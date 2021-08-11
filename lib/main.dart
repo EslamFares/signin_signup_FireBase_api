@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:signin_fb_api/cubit/home_cubit.dart';
 import 'package:signin_fb_api/cubit/home_state.dart';
 import 'package:signin_fb_api/shared/dio_helper.dart';
+import 'package:signin_fb_api/view/splash/splash.dart';
 import 'shared/bloc_observer.dart';
 import 'shared/dark_theme.dart';
-import 'view/login_view.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -24,11 +24,11 @@ class MyApp extends StatelessWidget {
       child: BlocConsumer<HomeCubit, HomeStates>(
         listener: (context, state) {},
         builder: (context, state) => MaterialApp(
-          title: 'Flutter Demo',
-          debugShowCheckedModeBanner: false,
-          theme: darkTheme(), // ThemeData(primarySwatch: Colors.blue),
-          home: LoginView(),
-        ),
+            title: 'Flutter Demo',
+            debugShowCheckedModeBanner: false,
+            theme: darkTheme(), // ThemeData(primarySwatch: Colors.blue),
+            home: SplashView() //LoginView(),
+            ),
       ),
     );
   }

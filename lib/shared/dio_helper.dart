@@ -11,7 +11,7 @@ class DioHelper {
   static init() {
     dio = Dio(
       BaseOptions(
-        baseUrl: "https://api.openweathermap.org/",
+        baseUrl: "https://identitytoolkit.googleapis.com/",
         receiveDataWhenStatusError: true,
       ),
     );
@@ -28,7 +28,14 @@ class DioHelper {
     required String url,
     required Map<String, dynamic> query,
   }) async {
-    var formData = FormData.fromMap(query);
-    return await dio.post(url, data: formData);
+    // var formData = FormData.fromMap(query);
+    return await dio.post(url,
+        data: query,
+        options: Options(
+            contentType: 'application/json',
+            followRedirects: false,
+            validateStatus: (state) {
+              return state! < 500;
+            }));
   }
 }

@@ -71,7 +71,8 @@ class LoginView extends StatelessWidget {
                     SizedBox(height: 25),
                     //Pass TextFoem Field
                     TextFormField(
-                        controller: HomeCubit.get(context).passwordLoginController,
+                        controller:
+                            HomeCubit.get(context).passwordLoginController,
                         obscureText: HomeCubit.get(context).hidePass,
                         validator: (value) {
                           if (value.toString().isEmpty) {
@@ -127,13 +128,16 @@ class LoginView extends StatelessWidget {
                       child: HomeCubit.get(context).loadLogin
                           ? Center(child: CircularProgressIndicator())
                           : ElevatedButton(
-      onPressed: () {
-        if (HomeCubit.get(context).loginFormKey.currentState!.validate()) {
-          HomeCubit.get(context).login(context);
-        }
-      },
-      child: Text('login'),
-    ),
+                              onPressed: () {
+                                if (HomeCubit.get(context)
+                                    .loginFormKey
+                                    .currentState!
+                                    .validate()) {
+                                  HomeCubit.get(context).login(context);
+                                }
+                              },
+                              child: Text('login'),
+                            ),
                     ),
                     SizedBox(height: h * .2),
                   ],
@@ -149,10 +153,6 @@ class LoginView extends StatelessWidget {
 }
 
 class SignUpButton extends StatelessWidget {
-  const SignUpButton({
-    Key? key,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -162,17 +162,16 @@ class SignUpButton extends StatelessWidget {
         TextButton(
             onPressed: () {
               print('create account');
-                Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => SignUpView()),
-        );
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => SignUpView()),
+              );
             },
             child: Text("Sign Up "))
       ],
     );
   }
 }
-
 
 class ForgetPasswordButton extends StatelessWidget {
   const ForgetPasswordButton({

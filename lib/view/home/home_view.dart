@@ -10,6 +10,7 @@ class HomeView extends StatelessWidget {
     double w = MediaQuery.of(context).size.width;
     double h = MediaQuery.of(context).size.height;
     HomeCubit cubit = HomeCubit.get(context);
+    // cubit.getUserData();
     return Scaffold(
       appBar: AppBar(
         title: Text('home'),
@@ -21,6 +22,7 @@ class HomeView extends StatelessWidget {
                     title: 'Log Out',
                     subTitle: 'Are you sure??',
                     onConfirm: () {
+                      cubit.clearUserData();
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => LoginView()));
                     },
@@ -48,9 +50,10 @@ class HomeView extends StatelessWidget {
                       fit: BoxFit.cover)),
             ),
             SizedBox(height: 20),
-            Text('${cubit.userModel.email}'),
+            Text(
+                '${cubit.emailPref != null ? '${cubit.emailPref}' : '${cubit.userModel?.email}'}'),
             SizedBox(height: 20),
-            Text('${cubit.userModel.expiresIn}')
+            // Text('${cubit.userModel.expiresIn}')
           ],
         ),
       ),

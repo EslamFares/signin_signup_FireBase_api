@@ -1,8 +1,9 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signin_fb_api/models/user_model.dart';
+import 'package:signin_fb_api/shared/dio_helper.dart';
 import 'package:signin_fb_api/view/home/home_view.dart';
 import 'package:signin_fb_api/view/login_view.dart';
 import 'home_state.dart';
@@ -14,6 +15,11 @@ class HomeCubit extends Cubit<HomeStates> {
   final loginFormKey = GlobalKey<FormState>();
   TextEditingController emailLoginController = TextEditingController();
   TextEditingController passwordLoginController = TextEditingController();
+  clearLoginFaild() {
+    emailLoginController.clear();
+    passwordLoginController.clear();
+  }
+
   bool hidePass = true;
   changeShowPass() {
     hidePass = !hidePass;
@@ -23,30 +29,23 @@ class HomeCubit extends Cubit<HomeStates> {
   //================
   String apiKey = 'AIzaSyDLSy-_xZ7vs4p7s9efCNCcD8FDdIdvG0o';
   bool loadLogin = false;
-  late UserModel userModel;
+  UserModel? userModel;
+  //============================================
   void login(context) async {
     print('go==========>login');
     loadLogin = true;
     emit(LoadLoginState());
 
     try {
-      var response = await Dio().post(
-          'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$apiKey',
-          data: {
+      var response = await DioHelper.postData(
+          url: 'v1/accounts:signInWithPassword?key=$apiKey',
+          query: {
             "email": emailLoginController.text,
             "password": passwordLoginController.text,
             "returnSecureToken": true
-          },
-          //>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<
-          //=======important to handel error in Dio in (error 404) =========
-          options: Options(
-              contentType: 'application/json',
-              followRedirects: false,
-              validateStatus: (state) {
-                return state! < 500;
-              }));
+          });
 
-      //invalid state
+      //✔️✔️valid state Login
       if (response.statusCode == 200) {
         print('data come >>>>>> ${response.statusCode}');
         userModel = UserModel.fromJson(response.data);
@@ -55,20 +54,28 @@ class HomeCubit extends Cubit<HomeStates> {
           context,
           MaterialPageRoute(builder: (context) => HomeView()),
         );
+
         loadLogin = false;
         emit(LoadLoginState());
+        //----------------sahred prefrance --------------
+        setUserData();
+        //-----------------------------------------------
         emailLoginController.clear();
         passwordLoginController.clear();
-      } else {
+      }
+
+      //❌❌invalid state Login
+      else {
+        print('response.data invaild state ===> ${response.data}');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('❌ INVALID Email or PASSWORD...'),
+          content: Text('❌ ${response.data['error']['message']} ...'),
           behavior: SnackBarBehavior.floating,
         ));
         loadLogin = false;
         emit(LoadLoginState());
       }
     } on Exception catch (e) {
-      //invalid state
+      // ❗❗ invalid state Login Error
       print('errrrrrror===>${e.toString()}');
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('❌ INVALID Email or PASSWORD...'),
@@ -84,6 +91,11 @@ class HomeCubit extends Cubit<HomeStates> {
   TextEditingController emailsignUpController = TextEditingController();
   TextEditingController passwordsignUpontroller = TextEditingController();
   //==================
+  clearsignUpFiled() {
+    emailsignUpController.clear();
+    passwordsignUpontroller.clear();
+  }
+
   bool hidePassSignUp = true;
   changeShowPassSignUp() {
     hidePassSignUp = !hidePassSignUp;
@@ -105,15 +117,15 @@ class HomeCubit extends Cubit<HomeStates> {
     emit(LoadSignUpState());
 
     try {
-      var response = await Dio().post(
-          'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$apiKey',
-          data: {
+      var response = await DioHelper.postData(
+          url: 'v1/accounts:signUp?key=$apiKey',
+          query: {
             "email": emailsignUpController.text,
             "password": passwordsignUpontroller.text,
             "returnSecureToken": true
           });
+      //✔️✔️ valid state Sign Up
 
-      //invalid state
       if (response.statusCode == 200) {
         print('data send >>>>>> ${response.statusCode}');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -128,23 +140,47 @@ class HomeCubit extends Cubit<HomeStates> {
         emit(LoadSignUpState());
         emailsignUpController.clear();
         passwordsignUpontroller.clear();
-      } else {
+      }
+      //❌❌invalid state Sign Up
+      else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('❌ Email already exists..'),
+          content: Text('❌  ${response.data['error']['message']} ...'),
           behavior: SnackBarBehavior.floating,
         ));
         loadSignUp = false;
         emit(LoadSignUpState());
       }
     } on Exception catch (e) {
-      //invalid state
+      // ❗❗ invalid state Login Error
       print('errrrrrror===>${e.toString()}');
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('❌ Email already exists..'),
+        content: Text('❗ Email already exists..'),
         behavior: SnackBarBehavior.floating,
       ));
       loadSignUp = false;
       emit(LoadSignUpState());
     }
+  }
+
+  //=============shared========
+  SharedPreferences? preferences;
+  String? emailPref;
+  setUserData() async {
+    preferences = await SharedPreferences.getInstance();
+    preferences!.setString('idToken', userModel!.idToken.toString());
+    preferences!.setString('email', userModel!.email.toString());
+  }
+
+  getUserData() async {
+    preferences = await SharedPreferences.getInstance();
+    emailPref = preferences?.getString('email').toString();
+    print('emailPref ======>$emailPref');
+    emit(GetDataPrefState());
+  }
+
+  clearUserData() async {
+    preferences = await SharedPreferences.getInstance();
+    preferences!.clear();
+    print('preferences Data clear !!!');
   }
 }
