@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:signin_fb_api/cubit/home_cubit.dart';
-import 'package:signin_fb_api/cubit/home_state.dart';
-import 'package:signin_fb_api/shared/dio_helper.dart';
+import 'package:signin_fb_api/view/home/cubits/cubit.dart';
+import 'package:signin_fb_api/view/login/cubits/cubit.dart';
+import 'package:signin_fb_api/view/login/states/state.dart';
+import 'package:signin_fb_api/view/signup/cubits/cubit.dart';
 import 'package:signin_fb_api/view/splash/splash.dart';
-import 'shared/bloc_observer.dart';
-import 'shared/dark_theme.dart';
+import 'core/bloc_observer.dart';
+import 'core/dark_theme.dart';
+import 'core/dio_helper.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -19,16 +21,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (context) => LoginCubit()),
+        BlocProvider(create: (context) => SignUpCubit()),
         BlocProvider(create: (context) => HomeCubit()),
       ],
-      child: BlocConsumer<HomeCubit, HomeStates>(
+      child: BlocConsumer<LoginCubit, LoginStates>(
         listener: (context, state) {},
         builder: (context, state) => MaterialApp(
-            title: 'Flutter Demo',
-            debugShowCheckedModeBanner: false,
-            theme: darkTheme(), // ThemeData(primarySwatch: Colors.blue),
-            home: SplashView() //LoginView(),
-            ),
+          title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
+          theme: darkTheme(),
+          home: SplashView(),
+        ),
       ),
     );
   }
